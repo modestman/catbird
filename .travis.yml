@@ -7,27 +7,18 @@ addons:
     packages:
     - libressl
 
-jobs:
-  include:
-    - stage: Test
-      script: make test
+script: 
+  - make test
 
-    - stage: Release
-      branches:
-        only:
-        - master
-      script: make release && zip -rq catbird.zip catbird start.sh stop.sh Sources Resources LICENSE
-      deploy:
-        provider: releases
-        api_key: $GITHUB_OAUTH_TOKEN
-        skip_cleanup: true
-        file: catbird.zip
-        on:
-          tags: true
+before_deploy:
+  - make release 
+  - zip -r catbird.zip catbird start.sh stop.sh Sources Resources LICENSE
 
-stages:
-  - name: Test
-    if: type = pull_request
-
-  - name: Release
-    if: branch = master AND tag IS present
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  skip_cleanup: true
+  file: catbird.zip
+  on:
+    tags: true
+    branch: master
