@@ -6,13 +6,16 @@ addons:
   homebrew:
     packages:
     - libressl
-    
+
 jobs:
   include:
     - stage: Test
       script: make test
 
     - stage: Release
+      branches:
+        only:
+        - master
       script: make release && zip -rq catbird.zip catbird start.sh stop.sh Sources Resources LICENSE
       deploy:
         provider: releases
@@ -25,3 +28,6 @@ jobs:
 stages:
   - name: Test
     if: type = pull_request
+
+  - name: Release
+    if: branch = master AND tag IS present
