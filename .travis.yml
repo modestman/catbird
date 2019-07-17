@@ -2,6 +2,11 @@ osx_image: xcode10.2
 language: swift
 env:
   - SWIFT_VERSION=5.0
+addons:
+  homebrew:
+    packages:
+    - libressl
+    
 jobs:
   include:
     - stage: Test
@@ -16,3 +21,7 @@ jobs:
         file: catbird.zip
         on:
           tags: true
+
+stages:
+  - name: Test
+    if: type = pull_request
