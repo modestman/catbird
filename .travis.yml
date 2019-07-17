@@ -1,0 +1,18 @@
+osx_image: xcode10.2
+language: swift
+env:
+  - SWIFT_VERSION=5.0
+jobs:
+  include:
+    - stage: Test
+      script: make test
+
+    - stage: Release
+      script: make release && zip -rq catbird.zip catbird start.sh stop.sh Sources Resources LICENSE
+      deploy:
+        provider: releases
+        api_key: $GITHUB_OAUTH_TOKEN
+        skip_cleanup: true
+        file: catbird.zip
+        on:
+          tags: true
